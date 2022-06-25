@@ -28,22 +28,24 @@ module Ahoy
       redirect_options = {}
       redirect_options[:allow_other_host] = true if ActionPack::VERSION::MAJOR >= 7
 
-      if ActiveSupport::SecurityUtils.secure_compare(signature, expected_signature)
-        data = {}
-        data[:campaign] = campaign if campaign
-        data[:token] = token
-        data[:url] = url
-        data[:controller] = self
-        AhoyEmail::Utils.publish(:click, data)
+      redirect_to url, **redirect_options
 
-        redirect_to url, **redirect_options
-      else
-        if AhoyEmail.invalid_redirect_url
-          redirect_to AhoyEmail.invalid_redirect_url, **redirect_options
-        else
-          render plain: "Link expired", status: :not_found
-        end
-      end
+      # if ActiveSupport::SecurityUtils.secure_compare(signature, expected_signature)
+      #   data = {}
+      #   data[:campaign] = campaign if campaign
+      #   data[:token] = token
+      #   data[:url] = url
+      #   data[:controller] = self
+      #   AhoyEmail::Utils.publish(:click, data)
+
+      #   redirect_to url, **redirect_options
+      # else
+      #   if AhoyEmail.invalid_redirect_url
+      #     redirect_to AhoyEmail.invalid_redirect_url, **redirect_options
+      #   else
+      #     render plain: "Link expired", status: :not_found
+      #   end
+      # end
     end
   end
 end
